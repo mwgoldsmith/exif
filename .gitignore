@@ -27,8 +27,10 @@ obj/
 [Rr]elease*/
 _ReSharper*/
 [Tt]est[Rr]esult*
+
 .vs/
-*.sdf
-*.ilk
-*.opendb
 *.VC.db
+*.opendb
+*.sdf
+*.vcxproj.user
+
