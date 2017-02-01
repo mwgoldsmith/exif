@@ -750,7 +750,7 @@ mnote_canon_entry_get_value (const MnoteCanonEntry *entry, unsigned int t, char 
 		for(i=0;i<entry->components;i++) {
 			vl = exif_get_long (data, entry->order);
 			data+=4;
-			printf ("Value%d=%d\n", i, vs);
+			printf ("Value%d=%d\n", i, vl);
 		}
 		else if (entry->format == EXIF_FORMAT_ASCII)
 		    strncpy (val, data, MIN (entry->size, maxlen));
