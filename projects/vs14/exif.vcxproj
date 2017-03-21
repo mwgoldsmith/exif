@@ -37,6 +37,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{ADAD7F09-F96E-4543-BF31-EF0FE5EC948E}</ProjectGuid>
     <RootNamespace>exif</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -176,48 +177,54 @@
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;HAVE_STDINT_H;GETTEXT_PACKAGE="libexif-12";LOCALEDIR=;WIN32;DEBUG;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)..\..\;$(ProjectDir)..\..\libexif;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <ProgramDataBaseFileName>$(OutDir)..\..\lib\$(PlatformTarget)\$(TargetName).pdb</ProgramDataBaseFileName>
+      <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
+      <AssemblerListingLocation>$(OutDir)..\..\asm\$(PlatformTarget)\$(Configuration)\$(ConfigurationType)\$(ProjectName)\</AssemblerListingLocation>
+      <AssemblerOutput>AssemblyAndSourceCode</AssemblerOutput>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <OmitFramePointers>false</OmitFramePointers>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <MultiProcessorCompilation>false</MultiProcessorCompilation>
+      <MinimalRebuild>true</MinimalRebuild>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <FloatingPointModel>Precise</FloatingPointModel>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
     </ClCompile>
     <Lib>
       <TargetMachine>MachineX86</TargetMachine>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <AdditionalLibraryDirectories>$(OutDir)..\..\lib\$(PlatformTarget)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <PreBuildEvent>
-      <Command>
-ECHO ON
+      <Command>ECHO ON
 SETLOCAL EnableDelayedExpansion EnableExtensions
 
 IF EXIST "$(OutDir)..\..\licenses\$(ProjectName).txt" (
   DEL "$(OutDir)..\..\licenses\$(ProjectName).txt"
 )
 
-IF EXIST "$(OutDir)..\..\include\$(ProjectName)" (
-  RD /q /s "$(OutDir)..\..\include\$(ProjectName)"
+IF EXIST "$(OutDir)..\..\include\lib$(ProjectName)" (
+  RD /q /s "$(OutDir)..\..\include\lib$(ProjectName)"
 )
 
-ENDLOCAL
-      </Command>
+ENDLOCAL</Command>
     </PreBuildEvent>
     <PostBuildEvent>
-      <Command>
-ECHO Off
+      <Command>ECHO Off
 SETLOCAL EnableDelayedExpansion EnableExtensions
 
 MKDIR "$(OutDir)..\..\include"
-MKDIR "$(OutDir)..\..\include\$(ProjectName)"
+MKDIR "$(OutDir)..\..\include\lib$(ProjectName)"
 
 FOR %%H IN (exif-byte-order.h exif-content.h exif-data.h exif-data-type.h exif-entry.h exif-format.h exif-ifd.h exif-loader.h exif-log.h exif-mem.h exif-mnote-data.h exif-tag.h exif-utils.h _stdint.h exif-system.h exif.h) DO (
   SET "_HEADER=%%H"
-  COPY "$(ProjectDir)..\..\libexif\!_HEADER!" "$(OutDir)..\..\include\$(ProjectName)"
+  COPY "$(ProjectDir)..\..\libexif\!_HEADER!" "$(OutDir)..\..\include\lib$(ProjectName)"
 )
 MKDIR "$(OutDir)..\..\licenses"
 COPY "$(ProjectDir)..\..\README" "$(OutDir)..\..\licenses\$(ProjectName).txt" 
 
-ENDLOCAL
-      </Command>
+ENDLOCAL</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DebugDLL|Win32'">
@@ -227,7 +234,17 @@ ENDLOCAL
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;HAVE_STDINT_H;GETTEXT_PACKAGE="libexif-12";LOCALEDIR=;WIN32;DEBUG;_DEBUG;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)..\..\;$(ProjectDir)..\..\libexif;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <ProgramDataBaseFileName>$(IntDir)$(TargetName).pdb</ProgramDataBaseFileName>
+      <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
+      <AssemblerListingLocation>$(OutDir)..\..\asm\$(PlatformTarget)\$(Configuration)\$(ConfigurationType)\$(ProjectName)\</AssemblerListingLocation>
+      <AssemblerOutput>AssemblyAndSourceCode</AssemblerOutput>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <MultiProcessorCompilation>false</MultiProcessorCompilation>
+      <MinimalRebuild>true</MinimalRebuild>
+      <OmitFramePointers>false</OmitFramePointers>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <FloatingPointModel>Precise</FloatingPointModel>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -241,38 +258,34 @@ ENDLOCAL
       <LargeAddressAware>true</LargeAddressAware>
     </Link>
     <PreBuildEvent>
-      <Command>
-ECHO ON
+      <Command>ECHO ON
 SETLOCAL EnableDelayedExpansion EnableExtensions
 
 IF EXIST "$(OutDir)..\..\licenses\$(ProjectName).txt" (
   DEL "$(OutDir)..\..\licenses\$(ProjectName).txt"
 )
 
-IF EXIST "$(OutDir)..\..\include\$(ProjectName)" (
-  RD /q /s "$(OutDir)..\..\include\$(ProjectName)"
+IF EXIST "$(OutDir)..\..\include\lib$(ProjectName)" (
+  RD /q /s "$(OutDir)..\..\include\lib$(ProjectName)"
 )
 
-ENDLOCAL
-      </Command>
+ENDLOCAL</Command>
     </PreBuildEvent>
     <PostBuildEvent>
-      <Command>
-ECHO Off
+      <Command>ECHO Off
 SETLOCAL EnableDelayedExpansion EnableExtensions
 
 MKDIR "$(OutDir)..\..\include"
-MKDIR "$(OutDir)..\..\include\$(ProjectName)"
+MKDIR "$(OutDir)..\..\include\lib$(ProjectName)"
 
 FOR %%H IN (exif-byte-order.h exif-content.h exif-data.h exif-data-type.h exif-entry.h exif-format.h exif-ifd.h exif-loader.h exif-log.h exif-mem.h exif-mnote-data.h exif-tag.h exif-utils.h _stdint.h exif-system.h exif.h) DO (
   SET "_HEADER=%%H"
-  COPY "$(ProjectDir)..\..\libexif\!_HEADER!" "$(OutDir)..\..\include\$(ProjectName)"
+  COPY "$(ProjectDir)..\..\libexif\!_HEADER!" "$(OutDir)..\..\include\lib$(ProjectName)"
 )
 MKDIR "$(OutDir)..\..\licenses"
 COPY "$(ProjectDir)..\..\README" "$(OutDir)..\..\licenses\$(ProjectName).txt" 
 
-ENDLOCAL
-      </Command>
+ENDLOCAL</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -282,47 +295,54 @@ ENDLOCAL
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;HAVE_STDINT_H;GETTEXT_PACKAGE="libexif-12";LOCALEDIR=;WIN32;DEBUG;_DEBUG;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)..\..\;$(ProjectDir)..\..\libexif;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <ProgramDataBaseFileName>$(IntDir)$(TargetName).pdb</ProgramDataBaseFileName>
+      <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
+      <AssemblerListingLocation>$(OutDir)..\..\asm\$(PlatformTarget)\$(Configuration)\$(ConfigurationType)\$(ProjectName)\</AssemblerListingLocation>
+      <AssemblerOutput>AssemblyAndSourceCode</AssemblerOutput>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <OmitFramePointers>false</OmitFramePointers>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <MultiProcessorCompilation>false</MultiProcessorCompilation>
+      <MinimalRebuild>true</MinimalRebuild>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <FloatingPointModel>Precise</FloatingPointModel>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
     </ClCompile>
     <Lib>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <AdditionalLibraryDirectories>$(OutDir)..\..\lib\$(PlatformTarget)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <TargetMachine>MachineX64</TargetMachine>
     </Lib>
     <PreBuildEvent>
-      <Command>
-ECHO ON
+      <Command>ECHO ON
 SETLOCAL EnableDelayedExpansion EnableExtensions
 
 IF EXIST "$(OutDir)..\..\licenses\$(ProjectName).txt" (
   DEL "$(OutDir)..\..\licenses\$(ProjectName).txt"
 )
 
-IF EXIST "$(OutDir)..\..\include\$(ProjectName)" (
-  RD /q /s "$(OutDir)..\..\include\$(ProjectName)"
+IF EXIST "$(OutDir)..\..\include\lib$(ProjectName)" (
+  RD /q /s "$(OutDir)..\..\include\lib$(ProjectName)"
 )
 
-ENDLOCAL
-      </Command>
+ENDLOCAL</Command>
     </PreBuildEvent>
     <PostBuildEvent>
-      <Command>
-ECHO Off
+      <Command>ECHO Off
 SETLOCAL EnableDelayedExpansion EnableExtensions
 
 MKDIR "$(OutDir)..\..\include"
-MKDIR "$(OutDir)..\..\include\$(ProjectName)"
+MKDIR "$(OutDir)..\..\include\lib$(ProjectName)"
 
 FOR %%H IN (exif-byte-order.h exif-content.h exif-data.h exif-data-type.h exif-entry.h exif-format.h exif-ifd.h exif-loader.h exif-log.h exif-mem.h exif-mnote-data.h exif-tag.h exif-utils.h _stdint.h exif-system.h exif.h) DO (
   SET "_HEADER=%%H"
-  COPY "$(ProjectDir)..\..\libexif\!_HEADER!" "$(OutDir)..\..\include\$(ProjectName)"
+  COPY "$(ProjectDir)..\..\libexif\!_HEADER!" "$(OutDir)..\..\include\lib$(ProjectName)"
 )
 MKDIR "$(OutDir)..\..\licenses"
 COPY "$(ProjectDir)..\..\README" "$(OutDir)..\..\licenses\$(ProjectName).txt" 
 
-ENDLOCAL
-      </Command>
+ENDLOCAL</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DebugDLL|x64'">
@@ -332,7 +352,17 @@ ENDLOCAL
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;HAVE_STDINT_H;GETTEXT_PACKAGE="libexif-12";LOCALEDIR=;WIN32;DEBUG;_DEBUG;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)..\..\;$(ProjectDir)..\..\libexif;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <ProgramDataBaseFileName>$(IntDir)$(TargetName).pdb</ProgramDataBaseFileName>
+      <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
+      <AssemblerListingLocation>$(OutDir)..\..\asm\$(PlatformTarget)\$(Configuration)\$(ConfigurationType)\$(ProjectName)\</AssemblerListingLocation>
+      <AssemblerOutput>AssemblyAndSourceCode</AssemblerOutput>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <MultiProcessorCompilation>false</MultiProcessorCompilation>
+      <MinimalRebuild>true</MinimalRebuild>
+      <OmitFramePointers>false</OmitFramePointers>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <FloatingPointModel>Precise</FloatingPointModel>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -345,38 +375,34 @@ ENDLOCAL
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
-      <Command>
-ECHO ON
+      <Command>ECHO ON
 SETLOCAL EnableDelayedExpansion EnableExtensions
 
 IF EXIST "$(OutDir)..\..\licenses\$(ProjectName).txt" (
   DEL "$(OutDir)..\..\licenses\$(ProjectName).txt"
 )
 
-IF EXIST "$(OutDir)..\..\include\$(ProjectName)" (
-  RD /q /s "$(OutDir)..\..\include\$(ProjectName)"
+IF EXIST "$(OutDir)..\..\include\lib$(ProjectName)" (
+  RD /q /s "$(OutDir)..\..\include\lib$(ProjectName)"
 )
 
-ENDLOCAL
-      </Command>
+ENDLOCAL</Command>
     </PreBuildEvent>
     <PostBuildEvent>
-      <Command>
-ECHO Off
+      <Command>ECHO Off
 SETLOCAL EnableDelayedExpansion EnableExtensions
 
 MKDIR "$(OutDir)..\..\include"
-MKDIR "$(OutDir)..\..\include\$(ProjectName)"
+MKDIR "$(OutDir)..\..\include\lib$(ProjectName)"
 
 FOR %%H IN (exif-byte-order.h exif-content.h exif-data.h exif-data-type.h exif-entry.h exif-format.h exif-ifd.h exif-loader.h exif-log.h exif-mem.h exif-mnote-data.h exif-tag.h exif-utils.h _stdint.h exif-system.h exif.h) DO (
   SET "_HEADER=%%H"
-  COPY "$(ProjectDir)..\..\libexif\!_HEADER!" "$(OutDir)..\..\include\$(ProjectName)"
+  COPY "$(ProjectDir)..\..\libexif\!_HEADER!" "$(OutDir)..\..\include\lib$(ProjectName)"
 )
 MKDIR "$(OutDir)..\..\licenses"
 COPY "$(ProjectDir)..\..\README" "$(OutDir)..\..\licenses\$(ProjectName).txt" 
 
-ENDLOCAL
-      </Command>
+ENDLOCAL</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -385,51 +411,57 @@ ENDLOCAL
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)..\..\;$(ProjectDir)..\..\libexif;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;HAVE_STDINT_H;GETTEXT_PACKAGE="libexif-12";LOCALEDIR=;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <AssemblerListingLocation>$(OutDir)..\..\asm\$(PlatformTarget)\$(Configuration)\$(ConfigurationType)\$(ProjectName)\</AssemblerListingLocation>
+      <AssemblerOutput>AssemblyAndSourceCode</AssemblerOutput>
+      <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <MinimalRebuild>false</MinimalRebuild>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+      <StringPooling>true</StringPooling>
+      <FloatingPointModel>Precise</FloatingPointModel>
+      <FloatingPointExceptions>false</FloatingPointExceptions>
     </ClCompile>
     <Lib>
       <TargetMachine>MachineX86</TargetMachine>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <AdditionalLibraryDirectories>$(OutDir)..\..\lib\$(PlatformTarget)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <PreBuildEvent>
-      <Command>
-ECHO ON
+      <Command>ECHO ON
 SETLOCAL EnableDelayedExpansion EnableExtensions
 
 IF EXIST "$(OutDir)..\..\licenses\$(ProjectName).txt" (
   DEL "$(OutDir)..\..\licenses\$(ProjectName).txt"
 )
 
-IF EXIST "$(OutDir)..\..\include\$(ProjectName)" (
-  RD /q /s "$(OutDir)..\..\include\$(ProjectName)"
+IF EXIST "$(OutDir)..\..\include\lib$(ProjectName)" (
+  RD /q /s "$(OutDir)..\..\include\lib$(ProjectName)"
 )
 
-ENDLOCAL
-      </Command>
+ENDLOCAL</Command>
     </PreBuildEvent>
     <PostBuildEvent>
-      <Command>
-ECHO Off
+      <Command>ECHO Off
 SETLOCAL EnableDelayedExpansion EnableExtensions
 
 MKDIR "$(OutDir)..\..\include"
-MKDIR "$(OutDir)..\..\include\$(ProjectName)"
+MKDIR "$(OutDir)..\..\include\lib$(ProjectName)"
 
 FOR %%H IN (exif-byte-order.h exif-content.h exif-data.h exif-data-type.h exif-entry.h exif-format.h exif-ifd.h exif-loader.h exif-log.h exif-mem.h exif-mnote-data.h exif-tag.h exif-utils.h _stdint.h exif-system.h exif.h) DO (
   SET "_HEADER=%%H"
-  COPY "$(ProjectDir)..\..\libexif\!_HEADER!" "$(OutDir)..\..\include\$(ProjectName)"
+  COPY "$(ProjectDir)..\..\libexif\!_HEADER!" "$(OutDir)..\..\include\lib$(ProjectName)"
 )
 MKDIR "$(OutDir)..\..\licenses"
 COPY "$(ProjectDir)..\..\README" "$(OutDir)..\..\licenses\$(ProjectName).txt" 
 
-ENDLOCAL
-      </Command>
+ENDLOCAL</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDLL|Win32'">
@@ -441,7 +473,17 @@ ENDLOCAL
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)..\..\;$(ProjectDir)..\..\libexif;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;HAVE_STDINT_H;GETTEXT_PACKAGE="libexif-12";LOCALEDIR=;NDEBUG;_WINDOWS;_USRDLL;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ProgramDataBaseFileName>$(IntDir)$(TargetName).pdb</ProgramDataBaseFileName>
+      <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
+      <AssemblerListingLocation>$(OutDir)..\..\asm\$(PlatformTarget)\$(Configuration)\$(ConfigurationType)\$(ProjectName)\</AssemblerListingLocation>
+      <AssemblerOutput>AssemblyAndSourceCode</AssemblerOutput>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <MinimalRebuild>false</MinimalRebuild>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+      <StringPooling>true</StringPooling>
+      <FloatingPointModel>Precise</FloatingPointModel>
+      <FloatingPointExceptions>false</FloatingPointExceptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -457,38 +499,34 @@ ENDLOCAL
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <PreBuildEvent>
-      <Command>
-ECHO ON
+      <Command>ECHO ON
 SETLOCAL EnableDelayedExpansion EnableExtensions
 
 IF EXIST "$(OutDir)..\..\licenses\$(ProjectName).txt" (
   DEL "$(OutDir)..\..\licenses\$(ProjectName).txt"
 )
 
-IF EXIST "$(OutDir)..\..\include\$(ProjectName)" (
-  RD /q /s "$(OutDir)..\..\include\$(ProjectName)"
+IF EXIST "$(OutDir)..\..\include\lib$(ProjectName)" (
+  RD /q /s "$(OutDir)..\..\include\lib$(ProjectName)"
 )
 
-ENDLOCAL
-      </Command>
+ENDLOCAL</Command>
     </PreBuildEvent>
     <PostBuildEvent>
-      <Command>
-ECHO Off
+      <Command>ECHO Off
 SETLOCAL EnableDelayedExpansion EnableExtensions
 
 MKDIR "$(OutDir)..\..\include"
-MKDIR "$(OutDir)..\..\include\$(ProjectName)"
+MKDIR "$(OutDir)..\..\include\lib$(ProjectName)"
 
 FOR %%H IN (exif-byte-order.h exif-content.h exif-data.h exif-data-type.h exif-entry.h exif-format.h exif-ifd.h exif-loader.h exif-log.h exif-mem.h exif-mnote-data.h exif-tag.h exif-utils.h _stdint.h exif-system.h exif.h) DO (
   SET "_HEADER=%%H"
-  COPY "$(ProjectDir)..\..\libexif\!_HEADER!" "$(OutDir)..\..\include\$(ProjectName)"
+  COPY "$(ProjectDir)..\..\libexif\!_HEADER!" "$(OutDir)..\..\include\lib$(ProjectName)"
 )
 MKDIR "$(OutDir)..\..\licenses"
 COPY "$(ProjectDir)..\..\README" "$(OutDir)..\..\licenses\$(ProjectName).txt" 
 
-ENDLOCAL
-      </Command>
+ENDLOCAL</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -500,47 +538,54 @@ ENDLOCAL
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)..\..\;$(ProjectDir)..\..\libexif;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;HAVE_STDINT_H;GETTEXT_PACKAGE="libexif-12";LOCALEDIR=;NDEBUG;_WINDOWS;_LIB;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ProgramDataBaseFileName>$(OutDir)..\..\lib\$(PlatformTarget)\$(TargetName).pdb</ProgramDataBaseFileName>
+      <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
+      <AssemblerListingLocation>$(OutDir)..\..\asm\$(PlatformTarget)\$(Configuration)\$(ConfigurationType)\$(ProjectName)\</AssemblerListingLocation>
+      <AssemblerOutput>AssemblyAndSourceCode</AssemblerOutput>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <MinimalRebuild>false</MinimalRebuild>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+      <StringPooling>true</StringPooling>
+      <FloatingPointModel>Precise</FloatingPointModel>
+      <FloatingPointExceptions>false</FloatingPointExceptions>
     </ClCompile>
     <Lib>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <AdditionalLibraryDirectories>$(OutDir)..\..\lib\$(PlatformTarget)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <TargetMachine>MachineX64</TargetMachine>
     </Lib>
     <PreBuildEvent>
-      <Command>
-ECHO ON
+      <Command>ECHO ON
 SETLOCAL EnableDelayedExpansion EnableExtensions
 
 IF EXIST "$(OutDir)..\..\licenses\$(ProjectName).txt" (
   DEL "$(OutDir)..\..\licenses\$(ProjectName).txt"
 )
 
-IF EXIST "$(OutDir)..\..\include\$(ProjectName)" (
-  RD /q /s "$(OutDir)..\..\include\$(ProjectName)"
+IF EXIST "$(OutDir)..\..\include\lib$(ProjectName)" (
+  RD /q /s "$(OutDir)..\..\include\lib$(ProjectName)"
 )
 
-ENDLOCAL
-      </Command>
+ENDLOCAL</Command>
     </PreBuildEvent>
     <PostBuildEvent>
-      <Command>
-ECHO Off
+      <Command>ECHO Off
 SETLOCAL EnableDelayedExpansion EnableExtensions
 
 MKDIR "$(OutDir)..\..\include"
-MKDIR "$(OutDir)..\..\include\$(ProjectName)"
+MKDIR "$(OutDir)..\..\include\lib$(ProjectName)"
 
 FOR %%H IN (exif-byte-order.h exif-content.h exif-data.h exif-data-type.h exif-entry.h exif-format.h exif-ifd.h exif-loader.h exif-log.h exif-mem.h exif-mnote-data.h exif-tag.h exif-utils.h _stdint.h exif-system.h exif.h) DO (
   SET "_HEADER=%%H"
-  COPY "$(ProjectDir)..\..\libexif\!_HEADER!" "$(OutDir)..\..\include\$(ProjectName)"
+  COPY "$(ProjectDir)..\..\libexif\!_HEADER!" "$(OutDir)..\..\include\lib$(ProjectName)"
 )
 MKDIR "$(OutDir)..\..\licenses"
 COPY "$(ProjectDir)..\..\README" "$(OutDir)..\..\licenses\$(ProjectName).txt" 
 
-ENDLOCAL
-      </Command>
+ENDLOCAL</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDLL|x64'">
@@ -551,8 +596,18 @@ ENDLOCAL
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)..\..\;$(ProjectDir)..\..\libexif;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <ProgramDataBaseFileName>$(IntDir)$(TargetName).pdb</ProgramDataBaseFileName>
+      <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;HAVE_STDINT_H;GETTEXT_PACKAGE="libexif-12";LOCALEDIR=;NDEBUG;_WINDOWS;_USRDLL;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AssemblerListingLocation>$(OutDir)..\..\asm\$(PlatformTarget)\$(Configuration)\$(ConfigurationType)\$(ProjectName)\</AssemblerListingLocation>
+      <AssemblerOutput>AssemblyAndSourceCode</AssemblerOutput>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <MinimalRebuild>false</MinimalRebuild>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+      <StringPooling>true</StringPooling>
+      <FloatingPointModel>Precise</FloatingPointModel>
+      <FloatingPointExceptions>false</FloatingPointExceptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -567,38 +622,34 @@ ENDLOCAL
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <PreBuildEvent>
-      <Command>
-ECHO ON
+      <Command>ECHO ON
 SETLOCAL EnableDelayedExpansion EnableExtensions
 
 IF EXIST "$(OutDir)..\..\licenses\$(ProjectName).txt" (
   DEL "$(OutDir)..\..\licenses\$(ProjectName).txt"
 )
 
-IF EXIST "$(OutDir)..\..\include\$(ProjectName)" (
-  RD /q /s "$(OutDir)..\..\include\$(ProjectName)"
+IF EXIST "$(OutDir)..\..\include\lib$(ProjectName)" (
+  RD /q /s "$(OutDir)..\..\include\lib$(ProjectName)"
 )
 
-ENDLOCAL
-      </Command>
+ENDLOCAL</Command>
     </PreBuildEvent>
     <PostBuildEvent>
-      <Command>
-ECHO Off
+      <Command>ECHO Off
 SETLOCAL EnableDelayedExpansion EnableExtensions
 
 MKDIR "$(OutDir)..\..\include"
-MKDIR "$(OutDir)..\..\include\$(ProjectName)"
+MKDIR "$(OutDir)..\..\include\lib$(ProjectName)"
 
 FOR %%H IN (exif-byte-order.h exif-content.h exif-data.h exif-data-type.h exif-entry.h exif-format.h exif-ifd.h exif-loader.h exif-log.h exif-mem.h exif-mnote-data.h exif-tag.h exif-utils.h _stdint.h exif-system.h exif.h) DO (
   SET "_HEADER=%%H"
-  COPY "$(ProjectDir)..\..\libexif\!_HEADER!" "$(OutDir)..\..\include\$(ProjectName)"
+  COPY "$(ProjectDir)..\..\libexif\!_HEADER!" "$(OutDir)..\..\include\lib$(ProjectName)"
 )
 MKDIR "$(OutDir)..\..\licenses"
 COPY "$(ProjectDir)..\..\README" "$(OutDir)..\..\licenses\$(ProjectName).txt" 
 
-ENDLOCAL
-      </Command>
+ENDLOCAL</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
